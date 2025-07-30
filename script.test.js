@@ -1,4 +1,4 @@
-const {
+import {
   Calculator,
   AppendNumberCommand,
   AppendDecimalCommand,
@@ -8,18 +8,18 @@ const {
   SetOperatorCommand,
   CalculateCommand,
   Factorial,
-} = require("/src/index.js");
+} from "./src/script";
 
 describe("Command execute methods", () => {
   let calc;
 
   beforeEach(() => {
     document.body.innerHTML = `
-    <div id="input-history"></div>
-    <div id="display"></div>
-    <div id="memory-indicator"></div>
-    <div id="history-indicator"></div>
-  `;
+      <div id="input-history"></div>
+      <div id="display"></div>
+      <div id="memory-indicator"></div>
+      <div id="history-indicator"></div>
+    `;
     calc = new Calculator();
     calc.updateDisplay = jest.fn();
     calc.updateMemoryIndicator = jest.fn();
@@ -140,6 +140,7 @@ describe("Command execute methods", () => {
     expect(calc.operator).toBeNull();
     expect(calc.waitingForSecondOperand).toBe(false);
   });
+
   test("Testing pow command", () => {
     calc.displayValue = "3";
     calc.firstOperand = 2;
@@ -149,6 +150,7 @@ describe("Command execute methods", () => {
     cmd.execute();
     expect(calc.displayValue).toBe("8");
   });
+
   test("Testing root command", () => {
     calc.displayValue = "3";
     calc.firstOperand = 64;
@@ -158,12 +160,14 @@ describe("Command execute methods", () => {
     cmd.execute();
     expect(calc.displayValue).toBe("4");
   });
+
   test("Testing factorial command", () => {
     calc.displayValue = "5";
     const cmd = new Factorial(calc);
     cmd.execute();
     expect(calc.displayValue).toBe("120");
   });
+
   test("Testing factorial command with zero", () => {
     calc.displayValue = "0";
     const cmd = new Factorial(calc);

@@ -1,5 +1,5 @@
 import "./style.css";
-class Command {
+export class Command {
   constructor(calculator) {
     this.calculator = calculator;
     this.previousValue = calculator.displayValue;
@@ -24,7 +24,7 @@ class Command {
 }
 
 // Стандартные команды
-class AppendNumberCommand extends Command {
+export class AppendNumberCommand extends Command {
   constructor(calculator, number) {
     super(calculator);
     this.number = number;
@@ -36,16 +36,13 @@ class AppendNumberCommand extends Command {
       calc.displayValue = this.number;
       calc.waitingForSecondOperand = false;
     } else {
-      calc.displayValue =
-        calc.displayValue === "0"
-          ? this.number
-          : calc.displayValue + this.number;
+      calc.displayValue = calc.displayValue === "0" ? this.number : calc.displayValue + this.number;
     }
     calc.updateDisplay();
   }
 }
 
-class AppendDecimalCommand extends Command {
+export class AppendDecimalCommand extends Command {
   execute() {
     const calc = this.calculator;
     if (calc.waitingForSecondOperand) {
@@ -58,7 +55,7 @@ class AppendDecimalCommand extends Command {
   }
 }
 
-class ClearCommand extends Command {
+export class ClearCommand extends Command {
   execute() {
     Object.assign(this.calculator, {
       displayValue: "0",
@@ -72,7 +69,7 @@ class ClearCommand extends Command {
   }
 }
 
-class ToggleSignCommand extends Command {
+export class ToggleSignCommand extends Command {
   execute() {
     const calc = this.calculator;
     calc.displayValue = (parseFloat(calc.displayValue) * -1).toString();
@@ -80,7 +77,7 @@ class ToggleSignCommand extends Command {
   }
 }
 
-class ReciprocalCommand extends Command {
+export class ReciprocalCommand extends Command {
   execute() {
     const calc = this.calculator;
     const value = parseFloat(calc.displayValue);
@@ -93,7 +90,7 @@ class ReciprocalCommand extends Command {
   }
 }
 
-class SetOperatorCommand extends Command {
+export class SetOperatorCommand extends Command {
   constructor(calculator, operator) {
     super(calculator);
     this.operator = operator;
@@ -112,11 +109,7 @@ class SetOperatorCommand extends Command {
     if (calc.firstOperand === null) {
       calc.firstOperand = inputValue;
     } else if (calc.operator) {
-      const result = calc.calculateResult(
-        calc.firstOperand,
-        inputValue,
-        calc.operator
-      );
+      const result = calc.calculateResult(calc.firstOperand, inputValue, calc.operator);
       calc.displayValue = parseFloat(result.toFixed(10)).toString();
       calc.firstOperand = result;
       calc.updateDisplay();
@@ -128,17 +121,13 @@ class SetOperatorCommand extends Command {
   }
 }
 
-class CalculateCommand extends Command {
+export class CalculateCommand extends Command {
   execute() {
     const calc = this.calculator;
     if (calc.operator === null || calc.waitingForSecondOperand) return;
 
     const inputValue = parseFloat(calc.displayValue);
-    const result = calc.calculateResult(
-      calc.firstOperand,
-      inputValue,
-      calc.operator
-    );
+    const result = calc.calculateResult(calc.firstOperand, inputValue, calc.operator);
 
     Object.assign(calc, {
       displayValue: parseFloat(result.toFixed(10)).toString(),
@@ -172,7 +161,7 @@ class CubeRootCommand extends Command {
   }
 }
 
-class NthRootCommand extends Command {
+export class NthRootCommand extends Command {
   execute() {
     const calc = this.calculator;
     calc.firstOperand = parseFloat(calc.displayValue);
@@ -181,7 +170,7 @@ class NthRootCommand extends Command {
   }
 }
 
-class PowerCommand extends Command {
+export class PowerCommand extends Command {
   execute() {
     const calc = this.calculator;
     calc.firstOperand = parseFloat(calc.displayValue);
@@ -213,15 +202,12 @@ class PowerOfTenCommand extends Command {
     calc.updateDisplay();
   }
 }
-class Factorial extends Command {
+export class Factorial extends Command {
   execute() {
     const calc = this.calculator;
     if (calc.displayValue === "0") {
       calc.displayValue = "1";
-    } else if (
-      calc.displayValue < 0 ||
-      !Number.isInteger(parseFloat(calc.displayValue))
-    ) {
+    } else if (calc.displayValue < 0 || !Number.isInteger(parseFloat(calc.displayValue))) {
       calc.showErrorAndClear();
     } else {
       let l = 1;
@@ -261,7 +247,7 @@ class MemorySubtractCommand extends Command {
   }
 }
 
-class Calculator {
+export class Calculator {
   constructor() {
     this.displayValue = "0";
     this.firstOperand = null;
@@ -430,20 +416,6 @@ class Calculator {
     this.updateDisplay();
     setTimeout(() => this.executeCommand(new ClearCommand(this)), 1000);
   }
-}
-
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = {
-    Calculator,
-    AppendNumberCommand,
-    AppendDecimalCommand,
-    ClearCommand,
-    ToggleSignCommand,
-    ReciprocalCommand,
-    SetOperatorCommand,
-    CalculateCommand,
-    Factorial,
-  };
 }
 
 if (typeof window !== "undefined") {
